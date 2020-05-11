@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>邀请回答</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+    <link type="text/css" href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" type="text/css" href="css/custom-theme/jquery.ui.1.10.0.ie.css"/>
+    <![endif]-->
+    <!--<link href="assets/css/docs.css" rel="stylesheet">-->
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <link href="assets/css/demo.css?"+Math.random() rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <![endif]-->
+
+    <style type="text/css">
+     /*   img{max-width: 100%; height: auto;}
+        .weixin-tip{display: none; position: fixed; left:0; top:0; bottom:0; background: rgba(0,0,0,0.8); filter:alpha(opacity=80);  height: 100%; width: 100%; z-index: 100;}
+        .weixin-tip p{text-align: center; margin-top: 10%; padding:0 5%;}*/
+    </style>
+    <script type="text/javascript">var ctx = "";</script>
+</head>
+
+<body data-spy="scroll" data-target=".bs-docs-sidebar" data-twttr-rendered="true">
+    <!-- <div class="weixin-tip">
+        <p>
+            <img src="./assets/img/live_weixin.png" alt="微信打开"/>
+        </p>
+    </div> -->
+
+    <div class="regist_head_ss">
+        <img class="img_l" src="./assets/img/head_img.png">
+        <h3 class="tit">I2问问</h3>
+        <span class="sp"><a onclick="openApp()"  style='color:#fff'>打开</a></span>
+        <!--<span class="sp-2"><a href='i2wenwen://ww?title=a'  style='color:#fff'>跳转页面</a></span>-->
+    </div>
+
+    <div class="res_tit_one res_tit_one_j">I2问问</div>
+
+    <div class="res_tit_two res_tit_two_j">
+        <p class="tit-title js-title"> </p>
+
+        <p class="tit-body js-targetName"></p>
+    </div>
+
+
+    <div id="he_input_css" class="he_input_css">
+        <input name="name" placeholder="手机号" class="ui-autocomplete-input inpt_s inp_join js-join-cellPhone" autocomplete="off">
+    </div>
+    
+    <div class='error-tips'>
+            
+    </div>
+    <div class="regist_btn regist_join js-join"></div>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery-1.9.0.min.js" type="text/javascript"></script>
+    <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+    <script src="assets/js/google-code-prettify/prettify.js" type="text/javascript"></script>
+    <script src="./assets/js/app.js" type="text/javascript"></script>
+
+    <script src="assets/js/openApp.js" type="text/javascript"></script>
+</body>
+
+
+
+<script >
+    $(function () {
+        //加入公司
+        var cellphone=$('.js-join-cellPhone');
+
+        var shareData={};
+
+        app.commonAjax({
+            url:'/MobileApp/Share/Public/getShareData.do',
+            data:{
+                shareID:app.params.shareId,
+                type:'Issue',
+                senderID:app.params.senderID
+            },
+            success:function(data){
+                if(data.code==0){
+                    $('.js-title').text(data.data.senderName + '邀请您回答问题');
+                    $('.js-targetName').text(data.data.targetName)
+                    shareData.ID=data.data.targetID;
+                    shareData.objectID=data.data.targetID;
+                    shareData.ownCorpID=data.data.targetCorp;
+                    shareData.ownCorpID=data.data.targetCorp;
+                    shareData.ownerID=data.data.targetOwner;;
+                    shareData.sharerID=data.data.senderID;
+                    shareData.type=data.data.type;
+                    document.title='邀请回答'
+                    $('.js-join').text('回答')
+                }else{
+                    alert(data.message)
+                }
+            }
+        })
+
+
+        cellphone.bind("input propertychange change",function(event){
+            $('.error-tips').text('')
+            if((/^1[12345789]\d{9}$/.test(cellphone.val()))){
+                $('.js-join').addClass('active');
+            }else{
+                $('.js-join').removeClass('active');
+            }
+        });
+
+        $('.js-join').click(function () {
+            if(!(/^1[12345789]\d{9}$/.test(cellphone.val()))){
+                $('.error-tips').text('手机格式不正确！')
+                return false;
+            }
+
+            app.commonAjax({
+                url:'/MobileApp/Common/Public/checkExistence.do',
+                data:{
+                    objectType:'UserCellphone',
+                    objectValue:cellphone.val()
+                },
+                success:function(data){
+                    var url = window.location.origin;
+                    //已经注册
+                    if(data.code==0 && data.data>0){
+                        url='login.html'
+                    }else{
+                        url='register.html'
+                    }
+                    var obj = $.extend({},{
+                        cellphone:cellphone.val()
+                    },shareData)
+
+                    url=app.addUrlParams(url,obj)
+
+                    window.location.href=url;
+                }
+            });
+        })
+
+    });
+</script>
+
+</html>

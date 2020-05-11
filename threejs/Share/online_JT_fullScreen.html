@@ -1,0 +1,945 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta charset="UTF-8">
+    <script type="text/javascript">var ctx = "";</script>
+
+    <link rel="stylesheet" href="./mobile/static/assets/css/amazeui.min.css">
+
+    <script type="text/javascript" src="./static/3rd-extends/jquery-easyui-1.4.2/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="./static/3rd-extends/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
+
+    <link rel="stylesheet" type="text/css"
+          href="./static/3rd-extends/jquery-easyui-1.4.2/themes/bootstrap/easyui.css">
+
+    <script src="./mobile/static/assets/js/amazeui.min.js"></script>
+
+
+    <link rel="stylesheet" href="./mobile/static/css/iconfont.css">
+    <link rel="stylesheet" href="./mobile/static/assets/css/app.css?"+Math.random()>
+
+
+    <style type="text/css">
+        body {
+            overflow: hidden;
+            position: inherit;
+            /*color: white;*/
+        }
+
+        canvas {
+            /*opacity: 0;*/
+        }
+        /*3d浏览*/
+
+        .fitAll{
+            top: 5px;
+            color: #c6c6c6;
+        }
+
+        .showBom{
+            top: 45px;
+        }
+
+        .measures{
+            top: 90px;
+            font-size: 30px;
+        }
+        #tree {
+            position: fixed;
+            max-height: 100%;
+            display: none;
+            top: 0px;
+            overflow: auto;
+            overflow-scrolling: touch;
+            -webkit-overflow-scrolling:touch;
+        }
+
+        #webglcanvas {
+            /* The CSS background works only if the renderer is set to 'alpha=true' */
+            background: -moz-linear-gradient(#888888, #888888);
+            background: -ms-linear-gradient(#888888, #888888);
+            background: -webkit-linear-gradient(#888888, #888888);
+            background: -o-linear-gradient(#888888, #888888);
+            background: linear-gradient(#888888, #888888);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 0;
+        }
+
+
+
+        .d-msg {
+            position: fixed;
+            color: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+
+        .error-msg {
+            text-align: center;
+        }
+
+        .tree-node-hover {
+            background: transparent;
+            color: #fff;
+        }
+
+        .tree-node-selected {
+            background: transparent;
+            color: #fff;
+        }
+
+
+        .addHeightLine{
+            /*background-color: #00bf6f;*/
+            color: #ff7f41;
+        }
+
+
+        /*白色虚线*/
+        .tree-join {
+            background-position: -194px -94px;
+        }
+
+        .icon20-white-part-code.tree-folder-open {
+            background-position: -319px -94px;
+        }
+        .tree-joinbottom {
+            background-position: -160px -94px;
+        }
+
+        .tree-lines .tree-expanded, .tree-lines .tree-root-first .tree-expanded {
+            background-position: -144px -94px;
+        }
+        .tree-lines .tree-collapsed, .tree-lines .tree-root-first .tree-collapsed {
+            background-position: -128px -94px;
+        }
+        .tree-line {
+            background-position:-176px -116px;
+        }
+        .tree-lines .tree-root-one>.tree-joinbottom {
+            background-position: -293px -68px;
+        }
+        .tree-lines .tree-node-last .tree-expanded, .tree-lines .tree-root-one .tree-expanded {
+            background-position: -80px -94px;
+        }
+        .tree-lines .tree-node-last .tree-collapsed, .tree-lines .tree-root-one .tree-collapsed {
+            background-position: -64px -94px;
+        }
+
+        .tree-lines .tree-root-one>.tree-expanded {
+            background-position: -294px -94px;
+        }
+
+        .tree-lines .tree-root-one>.tree-collapsed {
+            background-position: -278px -94px;
+        }
+
+        .checkbox-big{
+            position: absolute;
+            margin-left: -30px;
+            width: 40px;
+            height:40px;
+        }
+        .sizeInfo {
+            position: absolute;
+            bottom: 30px;
+            background: rgba(227,227,227,0.6);
+            width: 30%;
+            height: 35px;
+            border-radius: 7px;
+            text-align: center;
+            left: 10%;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<div id="webglcanvas"></div>
+<ul id="tree"></ul>
+
+<div class="fitAll iconfont icon-lingjiansanweifuwei" id="fitAll"></div>
+<div class="fitAll showBom iconfont icon-lingjianBOM" id="showBom"></div>
+<div class="fitAll measures iconfont icon-celiang" id="menu"></div>
+<div class="d-msg">
+    <div class="error-msg">
+    </div>
+    <div class="loading-animation">
+        <img src="./mobile/static/image/img_action_wen.png" />
+        <div class="bolang"></div>
+    </div>
+</div>
+
+
+<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示</div>
+        <div class="am-modal-bd">3D浏览文件过大，可能导致手机浏览器崩溃，您确认想要继续加载吗？</div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-confirm>继续</span>
+            <span class="am-modal-btn">取消</span>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="static/3rd-extends/newPlugins/Detector.js"></script>
+<script src="static/3rd-extends/newPlugins/three.js"></script>
+<!--<script src="./static/3rd-extends/newPlugins/three.js"></script>-->
+<script src="static/3rd-extends/newPlugins/stats.min.js "></script>
+<script src="static/3rd-extends/newPlugins/AxisSystem.js"></script>
+<script src="static/3rd-extends/newPlugins/lzma_worker.js"></script>
+
+<script src="static/3rd-extends/newPlugins/DragControls.js"></script>
+<script src="./mobile/static/assets/js/app.js"></script>
+
+<script>
+    var lineG,ounum=0,mouseTime=false,lineM,spriteTL,sphereLength=[],meshChild=[],lastTime=0,firstTime=0;
+
+</script>
+<script src="static/3rd-extends/newPlugins/TrackballControls.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+        var scene;
+        var camera;
+        var controls;
+        var container;
+        var geometryArray;
+        var meshArray;
+        var axisSystem;
+        var renderer;
+        var raycaster;
+        var mouseVector,intersects;
+        var stats;
+        var interval;
+        var Productstructure;
+        var urlConut = 0;// modal零件的url
+
+        var initialMaxSize=0;
+
+        var numberOfJSONFiles;
+        var totalProgress = 0;
+        var spriteNum=0;
+
+        var params = app.parseParams(window.location.search)
+
+        var progress= $.AMUI.progress;
+
+        $.AMUI.progress.configure({
+            speed:500,
+            template:'<div class="nprogress-bar" role="nprogress-bar"> <div class="nprogress-peg"></div></div>'
+        });
+
+
+        var menu = document.getElementById('menu');
+
+        $('#showBom').click(function () {
+            var _this=$(this);
+            if(_this.hasClass('hideBom')){
+                _this.removeClass('hideBom');
+                _this.removeClass('icon-lingjianBOMyincang');
+                _this.addClass('icon-lingjianBOM');
+                $('#tree').show();
+            }else{
+                _this.addClass('hideBom');
+                _this.addClass('icon-lingjianBOMyincang');
+                _this.removeClass('icon-lingjianBOM');
+                $('#tree').hide();
+            }
+        });
+
+
+        /**
+         *
+         * 请求后台数据，树形结构 文件信息
+         */
+        app.commonAjax({
+             // url: '/MobileApp/Part/getTranslateResult.do',
+           url: 'static/modelInfo.json',
+            dataType: "JSON",
+            data: {
+                partID: params.partID,
+                ownCorpID:app.params.ownCorpID,
+                revRule: "LATEST"
+            },
+            success: function (dataTranslate) {
+
+                //显示 加载动画
+                $('.loading-animation').show();
+
+                if (dataTranslate.code==0) {
+                    app.commonAjax({
+                         // url: '/MobileApp/Part/getViewModelsInfo.do',
+                       url: 'static/modelInfo.json',
+                        dataType: "JSON",
+                        data: {
+                            partID: params.partID,
+                            ownCorpID:app.params.ownCorpID,
+                            revRule: "LATEST"
+                        },
+                        success: function (data) {
+                            menu.addEventListener('click', eventEnd);
+                            menu.addEventListener('touchend', eventEnd);
+                            function eventEnd(ev) {
+                                ev.preventDefault()
+                                var kg = this.getAttribute('data-on');
+                                if (kg == 1) {
+                                    this.style.cssText = 'background:transparent;color:#f8923e';
+                                    this.setAttribute('data-on', '0');
+                                    window.addEventListener("click", onMouseClick, false);
+                                    window.addEventListener("touchend", onMouseClick, false);
+                                    container.removeEventListener("mousedown", onMouseDown, true);
+                                    ev.stopPropagation();
+                                } else {
+
+                                    this.style.cssText = 'background:transparent;color:#c6c6c6';
+                                    this.setAttribute('data-on', '1');
+                                    window.removeEventListener("click", onMouseClick, false);
+                                    window.removeEventListener("touchend", onMouseClick, false);
+                                    container.addEventListener("mousedown", onMouseDown, true);
+
+                                    numberOfJSONFiles=data.data.Models.numberOfJSONFiles
+                                    var spliceIndex=(numberOfJSONFiles<=2)? 2:numberOfJSONFiles
+console.log(urlConut)
+                                    scene.remove(scene.children.splice(urlConut+1, 100));
+                                    sphereLength = [];
+                                    spriteNum = 0;
+                                    ounum = 0;
+
+                                    $('.sizeInfo').remove();
+//                                    scene.remove(scene.children.splice(data.data.Models.numberOfJSONFiles, 100));
+                                    ev.stopPropagation();
+                                }
+                            };
+                            if (data.code==0) {
+                                Productstructure= data.data.Productstructure;
+                                // 文件数量 大于 30  或者文件大小 大于 5M 的文件 应该提示用户 文件过大
+                                if (data.data.Models.numberOfJSONFiles >= 30 || data.data.Models.JSONFilesSize>=5*1024*1024) {
+                                    $('#my-confirm').modal({
+                                        relatedTarget: this,
+                                        closeViaDimmer: 0,
+                                        onConfirm: function () {
+                                            //只有当 状态 是 finsh  和 partiallyNoFinsh （ 完成 和 部分完成） 才能加载 数据 。
+                                            if(dataTranslate.data.status=='finish' || dataTranslate.data.status=='partiallyNoFinish'){
+                                                initializeScene(data.data.Models);
+
+                                                if(dataTranslate.data.status=='partiallyNoFinish'){
+                                                    app.showMessage(dataTranslate.message,5000)
+                                                }
+                                            }else{
+                                                $('.error-msg').text(dataTranslate.message);
+                                                return
+                                            }
+
+                                        },
+                                        onCancel: function () {
+
+                                        }
+                                    });
+
+                                } else {
+                                    //只有当 状态 是 finsh  和 partiallyNoFinsh （ 完成 和 部分完成） 才能加载 数据 。
+                                    if(dataTranslate.data.status=='finish' || dataTranslate.data.status=='partiallyNoFinish'){
+                                        initializeScene(data.data.Models);
+
+                                        if(dataTranslate.data.status=='partiallyNoFinish'){
+                                            app.showMessage(dataTranslate.message,5000)
+                                        }
+                                    }else{
+                                        $('.error-msg').text(dataTranslate.message);
+                                        return
+                                    }
+                                }
+
+                                loadTree();
+
+                            } else {
+                                $('.loading-animation').hide();
+                                $('.error-msg').text(data.message);
+                                return
+                            }
+                        }
+
+                    });
+                } else {
+                    $('.error-msg').text(dataTranslate.message);
+                }
+
+            }
+        });
+
+        // 禁用鼠标选中DOM元素
+        document.onselectstart = function() {
+            return false;
+        };
+
+        /***
+         * 加载树形结构
+         */
+        function loadTree(){
+            $("#tree").tree({
+                checkbox: true,
+//              selectMode: 3,
+                data: [Productstructure],
+                lines: true,
+                loadFilter: function (data) {
+                    app.eachTree(data, function (node, parent) {
+                        this.seq = node.key;
+                        this.iconCls = 'icon20-white-part-code';
+                        this.id = this.key;
+                        this.checked = false
+                        if (this.clik) {
+                            this.checked = true;
+                        }
+                        this.text = this.title;
+                        if (this.hasChild && this.children.length == 0) {
+                            this.state = 'closed'
+                        } else {
+                            this.state = 'open'
+                        }
+                    });
+                    return data;
+                },
+
+                formatter:function(node){
+                    return '<div style="40px;" class="js-change" data-id="'+node.id+'">'+node.text+'</div>';
+                },
+
+                onLoadSuccess: function () {
+                    $('.icon20-part-code').click(function (e) {
+                        e.stopPropagation();
+                    });
+                    $('.js-change').click(function(e){
+                        var _this= $(this);
+                        var id= _this.data('id');
+                        var node= $("#tree").tree('find', id);
+                        removeLineHeight();
+                        $(node.target).find('.js-change').addClass('addHeightLine');
+
+                        for(var a= 0,len=scene.children.length; a< len; a++){
+                            var ms= scene.children[a];
+                            if(ms instanceof THREE.Mesh){
+                                removeMeshColor(ms)
+                            }
+                        }
+
+                        // 没有文件节点
+                        if(node.folder){
+                            app.eachTree(node.children,function(){
+                                for(var a= 0,len=scene.children.length; a< len; a++){
+                                    var ms= scene.children[a];
+                                    if(ms instanceof THREE.Mesh){
+                                        if(ms.name== this.key){
+
+                                            addMeshColor(ms)
+                                        }
+                                    }
+                                }
+                            });
+                        }else{
+                            for(var a= 0,len=scene.children.length; a< len; a++){
+                                var ms= scene.children[a];
+                                if(ms instanceof THREE.Mesh){
+                                    if(ms.name== node.key){
+                                        addMeshColor(ms)
+                                    }
+                                }
+                            }
+                        }
+                        e.stopPropagation()
+                    });
+                },
+
+                onCheck: function (node, checked) {
+                    getChildrenNode(node, checked);
+
+                    if(checked){
+                        var checks = $("#tree").tree("getChecked");
+                        app.eachTree([node], function(){
+                            var tempNode = this;
+                            var isHave = false;
+                            var one3D = null;
+                            $(scene.children).each(function(){
+                                if(tempNode.seq === this.name){
+                                    isHave = true;
+                                    return false;
+                                }
+                                if(!this.visible){
+                                    one3D = this;
+                                }
+                            });
+                            if(!isHave && tempNode.seq){
+                                scene.add(geometryArray[tempNode.seq]);
+                                if(checks.length == 1 && scene.children.length > 2){
+                                    scene.remove(one3D);
+                                }
+                                fitAll(scene);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+
+        // 给mesh 对象 添加颜色
+        function addMeshColor(ms){
+            ms.material.color=new THREE.Color(0x5f9bc6);
+            ms.material.ambient=new THREE.Color(0x001a70);
+            ms.material.emissive=new THREE.Color(0x001a70);
+        }
+
+        function removeMeshColor(ms){
+            ms.material.color=new THREE.Color(0xffffff);
+            ms.material.ambient=new THREE.Color(0xffffff);
+            ms.material.emissive=new THREE.Color(0x000000);
+        }
+
+        // 移除tree 节点的高亮
+        function removeLineHeight(){
+            app.eachTree([Productstructure],function(){
+                var target= $("#tree").tree('find',this.key);
+                $(target.target).find('.js-change').removeClass('addHeightLine');
+            })
+        }
+
+        function getChildrenNode(node, checked) {
+            if (node.folder) {
+                var childrens = $('#tree').tree('getChildren', node.target);
+                $.each(childrens, function () {
+                    var _this = this;
+                    getChildrenNode(_this, checked);
+
+                });
+            } else {
+                // 树形节点 对应  模型文件的显示／隐藏
+                if (geometryArray && geometryArray[node.seq]) {
+                    geometryArray[node.seq].visible = checked;
+                }
+            }
+
+        }
+
+        function initializeScene(data) {
+            if (!Detector.webgl) {
+                Detector.addGetWebGLMessage();
+                return;
+            }
+
+
+            container = document.getElementById("webglcanvas");
+
+            var containerWidth = container.clientWidth;
+            var containerHeight = container.clientHeight;
+
+            renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+
+            renderer.setSize(containerWidth, containerHeight);
+            container.appendChild(renderer.domElement);
+
+            // stats
+            //stats = new Stats();
+            //container.appendChild( stats.dom );
+
+            // Add object picking
+            raycaster = new THREE.Raycaster();
+            mouseVector = new THREE.Vector3();
+            window.addEventListener("resize", onWindowResize, false);
+
+            $('#fitAll').click(function () {
+                for(var a = scene.children.length - 1; a >= 0; a--){
+                    if(scene.children.length==2){
+                        break;
+                    }
+                    var node = scene.children[a];
+                    if(!node.visible && node instanceof THREE.Mesh){
+                        scene.remove(node);
+                    }
+                }
+                fitAll(scene)
+            });
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 1000);
+            camera.position.set(0, 0, 6);
+            camera.lookAt(scene.position);
+            camera.name = "xj";
+            scene.add(camera);
+
+            controls = new THREE.TrackballControls(camera, renderer.domElement);
+
+//        axisSystem = new AxisSystem(camera, controls);
+
+            var scaleFactor = calculateScaleFactor(data.boundingBoxMinimum, data.boundingBoxMaximum);
+
+            initialMaxSize =scaleFactor;
+
+            geometryArray = new Object();
+            meshArray = new Object();
+
+            var loader = new THREE.JSONLoader();
+            var jsonFileNames = data.jsonFileNames;
+
+//        $('.error-msg').text('正在拼命加载中．．．');
+
+            container.addEventListener("mousedown", onMouseDown, true);
+
+            progress.start();
+
+            var fileNameArr = [];
+            for (var nodeName in jsonFileNames) {
+                if(jsonFileNames[nodeName].url){
+                    urlConut++;
+                    fileNameArr.push({name: nodeName, value: jsonFileNames[nodeName]});
+                }
+            }
+            var loadFile = function(i){
+
+                var def = $.Deferred();
+
+                var nodeName = fileNameArr[i].name;
+                var node = fileNameArr[i].value;
+                loader.onLoadStart = function () {
+                    this.extention = node.extention;
+                };
+
+                (function (nodeName) {
+                    loader.load(node.url, function (geometry, materials) {
+                        var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+                            vertexColors: THREE.VertexColors,
+                            side: THREE.DoubleSide
+                        }));
+                        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                        if (jsonFileNames[nodeName].transformation.length > 0) {
+                            geometry.applyMatrix({elements: jsonFileNames[nodeName].transformation});
+                        } else {
+
+                            geometry.applyMatrix({
+                                elements: [
+                                    1.0, 0.0, 0.0, 0.0,
+                                    0.0, 1.0, 0.0, 0.0,
+                                    0.0, 0.0, 1.0, 0.0,
+                                    0.0, 0.0, 0.0, 1.0
+                                ]
+                            });
+                        }
+                        mesh.maxBox = jsonFileNames[nodeName].boundingBoxMaximum;
+                        mesh.minBox = jsonFileNames[nodeName].boundingBoxMinimum;
+                        mesh.name = nodeName;
+                        scene.add(mesh);
+                        meshChild.push(mesh)
+                        geometryArray[nodeName] = mesh;
+                        meshArray[nodeName] = geometry;
+                        // After the last model has been added to the scene, re-fit it
+                        if ((scene.children.length - 1) == urlConut) {
+                            $('.error-msg').text('');
+                            //隐藏 加载动画
+                            $('.loading-animation').hide();
+                            $('#tree').show();
+                            progress.done();
+                        }
+                        fitAll(scene);
+                        def.resolve();
+                    });
+                })(nodeName);
+                return def;
+            }
+
+            var mpNum = 10;
+            var count = Math.ceil(fileNameArr.length / mpNum);
+            var deff = $.Deferred();
+            var tempDef = deff;
+            for(var a = 0; a < count; a++){
+                (function(a){
+                    tempDef = tempDef.then(function(){
+                        var defArr = [];
+                        for(var b = a * mpNum; b < fileNameArr.length && b < (a + 1) * mpNum; b++){
+                            defArr.push(loadFile(b));
+                        }
+                        return $.when.apply($, defArr);
+                    }, function(){
+
+                    });
+                })(a);
+            }
+            deff.resolve();
+
+            var pointLight = new THREE.PointLight(0xffffff, 1.0);
+            pointLight.position.copy(camera.position);
+            camera.add(pointLight);
+            animateScene();
+        }
+        function onMouseDown(mouseEvent){
+            mouseVector.x = ( mouseEvent.clientX / window.innerWidth ) * 2 - 1;
+            mouseVector.y = - ( mouseEvent.clientY / window.innerHeight ) * 2 + 1;
+
+            raycaster.setFromCamera( mouseVector, camera );
+            intersects = raycaster.intersectObjects( meshChild );
+
+            removeLineHeight();
+            var visibleObjectFound = 0;
+            if (intersects.length > 0) {
+
+                for (var i = 0; i < intersects.length; i++) {
+                    var object = intersects[i].object;
+                    if (object.visible) {
+                        for(var a= 0,len=scene.children.length; a< len; a++){
+                            var ms= scene.children[a];
+                            var target= $("#tree").tree('find',ms.name);
+                            if(ms instanceof THREE.Mesh){
+                                if(ms.name== object.name){
+                                    $("#tree").tree('expandTo',target.target);
+                                    $("#tree").tree('select',target.target);
+
+                                    var offsetTop= $(target.target).offset().top;
+                                    if(offsetTop < 0 || offsetTop > $(window).height()){
+                                        $("#tree").scrollTop($("#tree").scrollTop() + $(target.target).offset().top - $(window).height() / 2);
+//                                    $("#tree").scrollTop($(target.target).offset().top);
+                                    }
+                                    $(target.target).find('.js-change').addClass('addHeightLine');
+                                    addMeshColor(ms);
+                                    ms.isClick= true;
+                                }else{
+                                    removeMeshColor(ms);
+                                    ms.isClick= false;
+                                }
+                            }
+                        }
+                    }
+                    if (object.visible) {
+                        visibleObjectFound = 1;
+                        break;
+                    }
+                }
+            }
+
+
+
+            if (!visibleObjectFound) {
+                for(var a= 0,len=scene.children.length; a< len; a++){
+                    var ms= scene.children[a];
+                    var target= $("#tree").tree('find',ms.name);
+                    if(ms instanceof THREE.Mesh){
+                        ms.isClick= false;
+                        ms.material.color=new THREE.Color(0xffffff);
+                        ms.material.ambient=new THREE.Color(0xffffff);
+                        ms.material.emissive=new THREE.Color(0x000000);
+                    }
+                }
+            }
+            mouseEvent.stopPropagation();
+        }
+        function computeScale(geometry) {
+            geometry.computeBoundingBox();
+            var maxX = geometry.boundingBox.max.x;
+            var minX = geometry.boundingBox.min.x;
+            var maxY = geometry.boundingBox.max.y;
+            var minY = geometry.boundingBox.min.y;
+            var maxZ = geometry.boundingBox.max.z;
+            var minZ = geometry.boundingBox.min.z;
+            var maxDis = Math.sqrt((maxX - minX) * (maxX - minX) + (maxY - minY) * (maxY - minY) + (maxZ - minZ) * (maxZ - minZ)) / 2;
+            var scale = 1.0 / maxDis;
+            return scale;
+        }
+        function onMouseClick(event) {
+            event.preventDefault();
+            mouseVector.x = 2 * (event.clientX / container.clientWidth) - 1||2 * (event.changedTouches[0].clientX / container.clientWidth) - 1;
+            mouseVector.y = 1 - 2 * (event.clientY / container.clientHeight)||1 - 2 * (event.changedTouches[0].clientY / container.clientHeight);
+
+            raycaster.setFromCamera( mouseVector, camera );
+            intersects = raycaster.intersectObjects( meshChild );
+
+            if(mouseTime) {
+                var sphereGeometry = new THREE.SphereGeometry( 0.07, 0,0);
+                console.log(computeScale(sphereGeometry))
+
+                var sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xfd943e } );
+
+                sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+                // sphere.position.set(0,0,1);
+                if(intersects.length>0) {
+
+                    sphere.position.copy( intersects[0].point );
+                    sphere.name = "remove";
+
+                    sphereLength.push(sphere);
+                    ounum++;
+
+                    if(sphereLength.length>=2) {
+                        if(ounum%2==0) {
+                            var x=sphereLength[ounum-2].position.x;
+                            var y=sphereLength[ounum-2].position.y;
+                            var z=sphereLength[ounum-2].position.z;
+                            var xx=sphereLength[ounum-1].position.x;
+                            var yy=sphereLength[ounum-1].position.y;
+                            var zz=sphereLength[ounum-1].position.z;
+                            var lineLength = (lineLengthCount(x, y, z, xx, yy, zz) * 2.2);
+
+                            lineG = new THREE.Geometry();
+                            lineM = new THREE.LineBasicMaterial({
+                                color: 0xfd943e
+                            });
+                            lineG.vertices.push(
+                                new THREE.Vector3(x, y, z),
+                                new THREE.Vector3(xx, yy, zz)
+                            );
+                            var line = new THREE.Line(lineG, lineM);
+                            scene.add(line);
+                            line.name = "remove";
+                            $('.sizeInfo').remove();
+                            $('body').append("<div class='sizeInfo'>" + (lineLength * 10).toFixed(2) + "</div>")
+                        }
+                    }
+                    if(spriteNum%2==0){
+                        scene.remove(scene.children.splice(urlConut+1, 100));
+                    }
+                    scene.add(sphere);
+                    fitAll(sphere)
+                    spriteNum++;
+                }
+                mouseTime = false;
+
+            }
+        }
+
+        function lineLengthCount(x, y, z, xx, yy, zz) {
+            return Math.sqrt(Math.pow(x-xx,2)+Math.pow(y-yy,2)+Math.pow(z-zz,2))
+        }
+        function generateSprite(txt) {
+            var canvas = document.createElement( 'canvas' );
+            canvas.width = 1024;
+            canvas.height = 128;
+            var context = canvas.getContext( '2d' );
+            context.fillStyle = '#ccc';
+            context.fillRect( 0, 0, canvas.width, canvas.height );
+            context.font = '111px Verdana';
+            context.fillStyle = '#000000';
+            context.fillText(txt, 1, 110);
+            return canvas;
+        }
+        function beginProgress() {
+            totalProgress = 1;
+            interval = setInterval(function(){
+                console.log(totalProgress)
+                totalProgress= totalProgress+15;
+                $('.js-progress-bar').width(totalProgress + "%");
+                if (totalProgress > 95) {
+                    doClearInterval();
+                }
+            }, 1000)
+        }
+
+        function doClearInterval() {
+            clearInterval(interval);
+        }
+
+
+        function onWindowResize(resizeEvent) {
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+
+
+        function calculateScaleFactor(boundingBoxMinimum, boundingBoxMaximum) {
+            // Get bounding box size
+            var bBoxSize = [(boundingBoxMaximum[0] - boundingBoxMinimum[0]), (boundingBoxMaximum[1] - boundingBoxMinimum[1]), (boundingBoxMaximum[2] - boundingBoxMinimum[2])];
+
+            // Detect largest dimension
+            var largestSize = bBoxSize[0];
+            if (bBoxSize[1] > largestSize) {
+                largestSize = bBoxSize[1];
+            }
+            if (bBoxSize[2] > largestSize) {
+                largestSize = bBoxSize[2];
+            }
+            // Scale dimension to 100
+            return largestSize
+        }
+
+
+
+        function fitAll(allnode) {
+            // Calculate bounding box of the whole scene
+            var largestSize= 0;
+            for(var a = 0,len=allnode.children.length; a <len; a++){
+                var node= allnode.children[a];
+                if(node instanceof THREE.Mesh){
+                    var large= calculateScaleFactor(node.minBox,node.maxBox);
+                    if(large>largestSize){
+                        largestSize=large;
+                    }
+                }
+            }
+
+            if(allnode.children.length===2){
+
+            }else{
+                largestSize= initialMaxSize;
+            }
+
+            for(var a = 0,len=allnode.children.length; a <len; a++){
+                var node= scene.children[a];
+                if(node instanceof THREE.Mesh){
+                    node.scale.set(100/largestSize, 100/largestSize, 100/largestSize);
+                }
+            }
+
+            var boundingBoxOfNode = new THREE.Box3().setFromObject(allnode);
+
+            // Refocus camera the center of the given object
+            var centerOfGravity = boundingBoxOfNode.getCenter();
+            var newCameraPosition = new THREE.Vector3();
+            newCameraPosition.subVectors(centerOfGravity, controls.target);
+            camera.position.addVectors(camera.position, newCameraPosition);
+            camera.lookAt(centerOfGravity);
+            controls.target.set(centerOfGravity.x, centerOfGravity.y, centerOfGravity.z);
+
+            // Move camera along z until the object fits into the screen
+            var sphereSize = boundingBoxOfNode.getSize().length() * 0.5;
+            var distToCenter = sphereSize / Math.sin(Math.PI / 180.0 * camera.fov * 0.5);
+            var target = controls.target;
+            var vec = new THREE.Vector3();
+            vec.subVectors(camera.position, target);
+            vec.setLength(distToCenter);
+            camera.position.addVectors(vec, target);
+        }
+
+
+        function animateScene() {
+            controls.update();
+            requestAnimationFrame(animateScene);
+            renderScene();
+            //stats.update();
+        }
+
+        function renderScene() {
+            renderer.render(scene, camera);
+        }
+    });
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>注册</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+
+            <!-- Le styles -->
+            <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+            <link type="text/css" href="css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+            <link type="text/css" href="assets/css/font-awesome.min.css" rel="stylesheet" />
+            <!--[if IE 7]>
+            <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css">
+            <![endif]-->
+            <!--[if lt IE 9]>
+            <link rel="stylesheet" type="text/css" href="css/custom-theme/jquery.ui.1.10.0.ie.css"/>
+            <![endif]-->
+            <!--<link href="assets/css/docs.css" rel="stylesheet">-->
+            <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+            <link href="assets/css/demo.css?"+Math.random() rel="stylesheet">
+
+            <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+            <!--[if lt IE 9]>
+            <![endif]-->
+
+
+            <script type="text/javascript">var ctx = "";</script>
+        </head>
+
+        <body data-spy="scroll" data-target=".bs-docs-sidebar" data-twttr-rendered="true">
+
+
+            <div class="regist_head_ss">
+                <img class="img_l" src="./assets/img/head_img.png">
+                <h3 class="tit">I2问问</h3>
+               <span class="sp"><a onclick="openApp()"  style='color:#fff'>打开</a></span>
+            </div>
+
+            <div class="res_tit_one">I2问问</div>
+            <div class="res_tit_two">直接注册并加入查阅</div>
+
+            <form class='js-registerForm' action='/MobileApp/Common/Public/register.do'>
+                <div id="he_input_css" class="he_input_css">
+
+                    <input type="hidden" name="businessType" value="UserRegistry">
+                    <input name="cellphone" type="tel" placeholder="手机号码" class="inpt_s" autocomplete="off">
+                    <div style="position: relative">
+                        <input name="verifyCode" style="padding-right: 90px;" placeholder="验证码" class="ui-autocomplete-input inpt_s" autocomplete="off">
+                        <div class="get_yzm">获取验证码</div>
+                    </div>
+                    <input name="userName" placeholder="姓名" class="ui-autocomplete-input inpt_s" autocomplete="off">
+                    <div style="position: relative">
+                        <input name="password" type="password" placeholder="输入密码" class="ui-autocomplete-input inpt_s" autocomplete="off">
+
+                         <input name="comfirepassword" type="password" style="padding-right: 40px;margin-bottom: 0;border-bottom: 0" placeholder="输入确认密码" class="ui-autocomplete-input inpt_s" autocomplete="off">
+                    </div>
+                    
+                </div>
+
+                 <div class='error-tips'>
+            
+                 </div>
+
+                <div class="regist_btn js-regist">注册</div>
+
+            </form>
+
+            <div class="footer_tit">注册即表示同意<a href="TermService.html"><span class="cc_color">《服务和隐私条款》</span></a></div>
+
+
+            <div class="footer_tit js-gotoLogin" style='margin-top: 20px'><span class="cc_color">已有账号直接登录</span></div>
+
+            <!-- Placed at the end of the document so the pages load faster -->
+            <script src="assets/js/jquery-1.9.0.min.js" type="text/javascript"></script>
+            <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+            <script src="assets/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+            <script src="assets/js/google-code-prettify/prettify.js" type="text/javascript"></script>
+            <script src="./assets/js/app.js" type="text/javascript"></script>
+            <script src="assets/js/myJs/regist.js" type="text/javascript"></script>
+            <script src="assets/js/openApp.js" type="text/javascript"></script>
+            
+        </body>
+</html>

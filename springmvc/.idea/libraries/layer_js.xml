@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="layer.js" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/src/main/webapp/js/swiper.min.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/js/swiper.animate.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/js/layer.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

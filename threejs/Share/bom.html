@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title></title>
+
+
+
+
+    <script type="text/javascript">var ctx = "";</script>
+    <link rel="stylesheet" type="text/css"
+          href="./static/3rd-extends/jquery-easyui-1.4.2/themes/bootstrap/easyui.css">
+
+    <link rel="stylesheet" href="./mobile/static/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="./mobile/static/assets/css/app.css?"+Math.random()>
+
+
+    <script src="./mobile/static/assets/js/jquery.min.js"></script>
+    <script src="./mobile/static/assets/js/iscroll.js"></script>
+    <script type="text/javascript" src="./static/3rd-extends/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
+    <script src="./mobile/static/assets/js/amazeui.min.js"></script>
+    <script src="./mobile/static/assets/js/handlebars.min.js"></script>
+    <script src="./mobile/static/assets/js/amazeui.widgets.helper.min.js"></script>
+    <script src="./mobile/static/assets/js/app.js?v=2.0"></script>
+    <script src="./mobile/static/js/plugin/eventList.js?v=2.0"></script>
+
+    <link rel="stylesheet" href="./mobile/static/css/custom-soroll.css">
+
+    <style>
+
+        #wrapper {
+            position: initial;
+            background-color: #f9f9f9;
+        }
+
+        .am-list {
+            margin-bottom: 0rem; top:0rem;
+        }
+
+
+        .am-list>li{
+            border-width: 0px;
+        }
+        .am-nav>li>a {
+            padding: .4em 0em;
+        }
+
+        .bom-expend-menu{
+            position: fixed;
+            width: 4rem;
+            top: 0px;
+            right: 0px;
+            z-index: 10000;
+            background-color: #d8d8d8;
+        }
+
+        .bom-expend-menu .menu-item{
+            white-space: initial;
+            font-size: 1.2rem;
+            text-align: center;
+            height: 4rem;
+            /*line-height: 4rem;*/
+            box-sizing: content-box;
+            border-left: 1px solid #b8b8b8;
+            border-right: 1px solid #b8b8b8;
+            border-bottom: 1px solid #b8b8b8;
+        }
+
+
+        .bom-expend-menu .menu-item-text{
+            margin: 0 auto;
+            height:2rem;
+        }
+        .bom-expend-menu .menu-item-text-1{
+            height: 4rem;
+            line-height: 4rem;
+            margin: 0 auto;
+        }
+
+        .bom-expend-menu .menu-item-active{
+            background-color: #7174b1;
+            color: #fff;
+            border-width: 0px;
+        }
+
+        #add-comment{
+            background-color: #fff;
+        }
+
+        .am-tab-panel{
+            overflow-scrolling: touch;
+            -webkit-overflow-scrolling:touch;
+        }
+
+        a{
+            color: #7c94f9;
+        }
+        a:focus, a:hover{
+            color: #7c94f9;
+        }
+
+    </style>
+</head>
+<body>
+
+        <div class="bom-expend-menu">
+            <div class="menu-item" data-type="level" data-value="1">
+                <p class="menu-item-text-1">一层</p>
+            </div>
+            <div class="menu-item" data-type="level" data-value="2">
+                <p class="menu-item-text-1">二层</p>
+            </div>
+            <div class="menu-item" data-type="level" data-value="3">
+                <p class="menu-item-text-1">三层</p>
+            </div>
+            <div class="menu-item" data-type="level" data-value="6">
+                <p class="menu-item-text-1">全部</p>
+            </div>
+            <div class="menu-item menu-item-active" data-type="revRule" data-value="LATEST">
+                <p class="menu-item-text" style='line-height: 2.8rem;'>最新</p>
+                <p class="menu-item-text" style='line-height: 1.2rem;'>版本</p>
+            </div>
+            <div class="menu-item" data-type="revRule" data-value="STOR">
+                <p class="menu-item-text" style='line-height: 2.8rem;'>存储</p>
+                <p class="menu-item-text" style='line-height: 1.2rem;'>版本</p>
+            </div>
+        </div>
+
+
+
+        <div style="overflow: auto;height: 100%">
+            <ul id="tree"></ul>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    $(function () {
+
+
+
+        /*-------------------bom开始-------------------------------------------------*/
+
+        var treeParam =  {
+            includeRoot: 'yes',
+            detailLevel: 'Simple',
+            expandLevel: '3',
+            revRule:'LATEST',
+            currentLevel:'0',
+            partID:app.params.partID,
+            ownCorpID:app.params.ownCorpID
+        }
+        $('#tree').tree({
+            url:app.ctx+'/MobileApp/Part/getChildParts.do',
+            queryParams:treeParam,
+            lines:true,
+            formatter:function(node){
+//                window.location.href = url;
+
+                return '<a class="tree-a js-treeClick" data-codeId="'+node.code+'"  data-partID="'+node.xAT_ID+'"  data-basePartID="'+node.basePartID+'">'+node.text+'</a>'
+            },
+            loadFilter: function (data) {
+                if(data.code==0){
+                    app.eachTree(data.data, function () {
+                        this.iconCls = 'icon20-part-code';
+                        this.id = this.seq;
+                        this.text =  this.code +' / '+this.revision + ' - ' + this.name;
+                        if(!this.children){
+                            this.children=[];
+                        }
+                        if (this.childCount>0 && this.children.length==0){
+                            this.state = 'closed'
+                        } else {
+                            this.state = 'open'
+                        }
+                    });
+                }
+
+                return data.data;
+            },
+            onBeforeLoad:function(node,param){
+                if (node) {
+                    param.includeRoot = 'no';
+                    param.partID = node.xAT_ID
+                    param.expandLevel= 1
+                    param.seq = node.seq;
+                    param.currentLevel = node.level
+                }
+            },
+//            onClick:function(node){
+//                var data={
+//                    codeId:node.code,
+//                    partID:node.xAT_ID,
+//                    basePartID:node.basePartID
+//                }
+//                var str = JSON.stringify(data);
+//                window.postMessage(str,window.location.href);
+//
+//                window.location.href = app.addUrlParams(window.location.origin + window.location.pathname,$.extend({},app.params,{partID:node.xAT_ID}));
+//            },
+            onLoadSuccess:function(){
+                $('.datagrid-body .datagrid-btable:eq(0) .datagrid-row:eq(0) span:eq(0)').addClass('first-tree-expanded');
+                $('.js-treeClick').click(function(e){
+                    var _this = $(this);
+                    var data={
+                        codeId:_this.attr('data-codeId'),
+                        partID:_this.attr('data-partID'),
+                        basePartID:_this.attr('data-basePartID')
+                    }
+                    var str = JSON.stringify(data);
+                    window.postMessage(str,window.location.href);
+                });
+            }
+
+        });
+
+        $('.bom-expend-menu div').click(function(){
+            var _this = $(this);
+            var type = _this.data('type');
+            var value = _this.data('value');
+            if(type=='level'){
+                treeParam.expandLevel = value;
+            }else{
+                $('.bom-expend-menu div').removeClass('menu-item-active');
+                _this.addClass('menu-item-active');
+                treeParam.revRule = value;
+            }
+            $('#tree').tree('reload');
+        });
+
+
+        /*-------------------bom结束-------------------------------------------------*/
+
+
+
+
+        /*-------------------整体页面开始-------------------------------------------------*/
+
+
+
+        $(window).resize(function () {
+            $('.am-tabs-bd').height($(window).outerHeight() - 41);
+            $('#wrapper').height(document.documentElement.clientHeight - 89);
+        });
+
+    })
+</script>
+
+</html>
+<!--http://pnc.co.il/dev/iscroll-5-pull-to-refresh-and-infinite-demo.html-->

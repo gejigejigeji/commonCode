@@ -1,0 +1,663 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title></title>
+
+    
+
+
+<script type="text/javascript">var ctx = "";</script>
+<link rel="stylesheet" type="text/css"
+      href="./static/3rd-extends/jquery-easyui-1.4.2/themes/bootstrap/easyui.css">
+
+<link rel="stylesheet" href="./mobile/static/assets/css/amazeui.min.css">
+<link rel="stylesheet" href="./mobile/static/assets/css/app.css?"+Math.random()>
+
+
+    <script src="./mobile/static/assets/js/jquery.min.js"></script>
+
+    <script src="./webchataudio/src/js/weixinAudio.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="./mobile/static/assets/js/iscroll.js"></script>
+    <script type="text/javascript" src="./static/3rd-extends/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
+    <script src="./mobile/static/assets/js/amazeui.min.js"></script>
+    <script src="./mobile/static/assets/js/handlebars.min.js"></script>
+    <script src="./mobile/static/assets/js/amazeui.widgets.helper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-cookie/1.3.0/jquery.cookie.js"></script>
+
+    <script src="./mobile/static/assets/js/app.js?"+Math.random()></script>
+    <script src="./mobile/static/js/plugin/eventList.js?v=2.0"></script>
+
+
+
+    <link rel="stylesheet" href="./mobile/static/css/custom-soroll.css">
+
+    <style>
+
+        #wrapper {
+            position: initial;
+            background-color: #fff;
+        }
+
+        .am-list {
+            margin-bottom: 0rem; top:0rem;
+        }
+
+
+        .am-list>li{
+            border-width: 0px;
+        }
+        .am-nav>li>a {
+            padding: .4em 0em;
+        }
+
+       .bom-expend-menu{
+           position: fixed;
+           width: 4rem;
+           top: 89px;
+           right: 0px;
+           z-index: 10000;
+           background-color: #e2e2e2;
+       }
+
+        .bom-expend-menu .menu-item{
+            white-space: initial;
+            font-size: 1.2rem;
+            text-align: center;
+            height: 4rem;
+            /*line-height: 4rem;*/
+            box-sizing: content-box;
+            border: 1px solid #ccc;
+        }
+
+
+        .bom-expend-menu .menu-item-text{
+            height: 1.5rem;
+            line-height: 2rem;
+            margin: 0 auto;
+        }
+        .bom-expend-menu .menu-item-text-1{
+            height: 4rem;
+            line-height: 4rem;
+            margin: 0 auto;
+        }
+
+        .bom-expend-menu .menu-item-active{
+            background-color: #7174b1;
+            color: #fff;
+            border-width: 0px;
+        }
+
+        #add-comment{
+            background-color: #fff;
+        }
+
+        .am-tab-panel{
+            overflow-scrolling: touch;
+            -webkit-overflow-scrolling:touch;
+        }
+
+        a{
+            color: #7c94f9;
+        }
+        a:focus, a:hover{
+            color: #7c94f9;
+        }
+
+        .comment-main {
+            position: relative;
+            margin-left: 5rem;
+            margin-right: 5px;
+            /*border-top: 1px solid #dedede;*/
+            border-bottom: 1px solid #dedede;
+            border-radius: 0;
+        }
+        .comment-hd {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        .comment-meta {
+             -webkit-box-flex: 1;
+             -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            font-size: 13px;
+            color: #999;
+            line-height: 1.2;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .comment-bd {
+             padding: 5px 0px;
+             overflow: hidden;
+        }
+        .comment-actions {
+            vertical-align: middle;
+            font-size: 13px;
+            color: #999;
+        }
+        .comment-actions span{
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .am-comment-avatar{
+            width: 4rem;
+            height: 4rem;
+        }
+
+
+        .regist_head_ss{
+            position: relative;
+            vertical-align: middle;
+            border-bottom: 1px solid #cfcfcf;
+            height: 60px;
+            line-height: 60px;
+        }
+        .regist_head_ss .img_l{
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 1rem;
+            width: 35px;
+        }
+
+        .regist_head_ss .tit{
+            display: inline-block;
+            font-size: 14px;
+            margin: 0;    
+            font-weight: 400;
+        }
+        .regist_head_ss .sp{
+            position: absolute;
+            top: 18px;
+            display: inline-block;
+            height: 26px;
+            line-height: 26px;
+            right: 10px;
+            background-color: #7c94f9;
+            padding: 0px 15px;
+            border-radius: 3px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .body-replys{
+            background-color: #dedede;
+            margin-top: 10px;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="regist_head_ss">
+    <img class="img_l" src="./mobile/static/image/head_img.png">
+    <h3 class="tit">I2问问</h3>
+    <span class="sp"><a onclick="openApp()"  style='color:#fff'>下载</a></span>
+    <!--<span class="sp"><a onclick="app.loginOut()"  style='color:#fff'>退出登录</a></span>-->
+</div>
+
+<div class="am-tabs" id="doc-my-tabs">
+    <ul class="am-tabs-nav am-nav am-nav-tabs am-nav-justify">
+        <li><a href="">属性</a></li>
+        <li><a href="">3D</a></li>
+        <li><a href="">BOM结构</a></li>
+        <li><a class="js-commnetCount" href="">评论</a></li>
+        <!-- <li><a href="">问题</a></li> -->
+    </ul>
+    <div class="am-tabs-bd">
+        <div class="am-tab-panel" style="overflow: auto;height: 100%">
+            <div class="js-base"></div>
+            <div class="am-cf am-padding-sm user-info-detail title">
+                <div class="am-fl">基本属性</div>
+                <div class="am-fr"></div>
+            </div>
+
+            <div class="js-pro"></div>
+
+            
+            <div class="js-bom-pro"></div>
+
+        </div>
+
+        <div class="am-tab-panel" style="overflow: auto;height: 100%">
+            <iframe id='onlineJSIframe' style="width: 100%;height: 100%;vertical-align: middle;border: 0px"
+                    frameborder="0"></iframe>
+        </div>
+        
+        <div class="am-tab-panel" style="overflow: auto;height: 100%">
+             <iframe id='bomIframe' style="width: 100%;height: 100%;vertical-align: middle;border: 0px"
+                    frameborder="0"></iframe>
+        </div>
+
+        
+        <div class="am-tab-panel" style="overflow: auto;">
+            <div id="wrapper">
+                <div class="scroller">
+                    <ul class="am-list" id="events-list">
+
+                    </ul>
+                    <div class="more"></div>
+                </div>
+            </div>
+            <!-- <div class="comment-add">
+                <div style="height: 3rem;background-color: #e6e6e6;width: 100%;margin: .7rem 1.5rem;border-radius: .5rem;">
+                    <span class="comment-edit-icon"></span>
+                    <span class="comment-text">请点此添加批注</span>
+                </div>
+            </div> -->
+        </div>
+
+      <!--   <div class="am-tab-panel" style="overflow: auto;height: 100%">
+           <iframe id='answerIframe' style="width: 100%;height: 100%;vertical-align: middle;border: 0px"
+                    frameborder="0"></iframe>
+        </div> -->
+
+    </div>
+</div>
+
+<div class="am-modal-actions" id="add-comment">
+    <div class="am-modal-actions-group">
+        <div class="am-form-group">
+        <textarea class="js-comment-content" style="width: 100%;background-color: #efefef;border-width: 0px;" placeholder="请在此添加评论" rows="5"></textarea>
+        </div>
+    </div>
+    <div class="am-modal-actions-group" style="position: relative;height: 3rem;">
+        <button class="am-btn am-btn-primary am-btn-block js-comment-submit" style="position:absolute;right: 0;top: -.5rem;">提交</button>
+    </div>
+</div>
+
+</body>
+
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+    {{#each this}}
+    <li class="js-li" data-id="{{id}}" style="padding:.5em 0rem 5px 0rem">
+            <div class="problem-head">
+                <div class="avatar">{{firstString creator.firstName}}</div>
+                <div class="userInfo name">{{creator.firstName}}</div>
+                <div class="userInfo time">{{lastUpdateDate}}</div>
+
+
+                <div class="userInfo revision">v{{revision}}</div>
+            </div>
+
+          <div class="problem-body">
+                {{#if isConent}}
+                    <div class="js-chankai">
+                        <div class='body-shenglv'>
+                            {{#each content}}
+
+                                {{#if img}}
+                                    <div class="img">
+                                        <img src={{value}} alt="">
+                                    </div>
+                                {{/if}}
+
+                            {{/each}}
+
+                            {{#each content}}
+                                {{#if text}}
+                                  <div class="text">{{value}}</div>
+                                {{/if}}
+                            {{/each}}
+
+                            {{#each content}}
+                                {{#if audio}}
+                                    <div style="margin-top: 10px;" class="audio" time="{{time}}" src='{{value}}'></div>
+                                {{/if}}
+                            {{/each}}
+                        </div>
+
+
+                        <div class="body-xianshi ">
+                            {{#each content}}
+
+                                {{#if img}}
+                                <div class="img">
+                                    <img src={{value}} alt="">
+                                </div>
+                                {{/if}}
+
+                                {{#if text}}
+                                    <div class="text">{{value}}</div>
+                                {{/if}}
+
+                                {{#if audio}}
+                                    <div style="margin-top: 10px;" class="audio" time="{{time}}" src='{{value}}'></div>
+                                {{/if}}
+                            {{/each}}
+                        </div>
+                    </div>
+
+
+
+              {{#if replys}}
+                        <div style="position:relative;height:13px;">
+                            <span class="js-zhankaiReplys" style="position:absolute;right:10px">全部{{replys.length}}回复</span>
+                        </div>
+                      {{/if}}
+                      <div class="body-replys">
+                          {{#each replys}}
+                              <p style="margin:0px">
+                                  <span>{{creator.firstName}}:</span>
+                                  <span style="color:#636363">{{content}}</span>
+                              </p>
+
+                          {{/each}}
+                      </div>
+                {{else}}
+                  <div class="text">{{content}}</div>
+                {{/if}}
+
+            </div>
+    </li>
+    {{/each}}
+</script>
+
+
+
+<script type="text/x-handlebars-template" id="pro-details">
+    {{#each this}}
+        <div class="am-cf am-padding-sm user-info-detail">
+            <div class="am-fl" style="color: #7c7c7c">{{title}}</div>
+            <div style="text-align: right;color: #333">{{value}}</div>
+        </div>
+    {{/each}}
+</script>
+
+<script>
+    $(function () {
+
+
+        if( app.params.type=='Invite'){
+
+        }else{
+            app.commonAjax({
+                url:'/MobileApp/Share/addReceivedShare.do',
+                data:{
+                    receiverIDs: app.params.userID,
+                    sharerID:app.params.sharerID,
+                    ownerID:app.params.ownerID,
+                    type:app.params.type,
+                    ID:app.params.ID
+                },
+                success:function(data){
+                    //登录状态 超时 或者 被别人挤下来
+                    if(data.code==11){
+                        app.loginOut();
+                    }
+                }
+            })
+
+        }
+
+
+        //注册一个翻译用的Helper获取字符串第一个字符
+          Handlebars.registerHelper("firstString",function(value){
+                if(value){
+                    return value.slice(0,1)
+                }
+                return '';
+          });
+
+
+        /*-------------------批注开始-------------------------------------------------*/
+        var v = new EventsList($('#wrapper'), {
+            // url: './static/comment.json',
+            url: '/MobileApp/Part/getPartComments.do',
+            content:$('#events-list'),
+            list:$('#events-list'),
+            fontHeight: parseInt($('html').css('fontSize')) * 3,
+            params: {
+                pageSize:10,
+                basePartID : app.params.basePartID,
+                partID: app.params.partID,
+                ownCorpID:app.params.ownCorpID
+
+            },
+            formatter:function(data){
+                if(!data.objects){
+                    return;
+                }
+                data.objects.map(function(obj,i){
+
+
+                    if(app.isJSONstring(obj.description) || obj.contents ){
+                        if(obj.replys){
+                            obj.replysLength=obj.replys.length;
+                        }
+
+                        obj.content = obj.contents;
+                        obj.isConent=true;
+                        obj.content.map(function(item,i){
+                            if(item.key=='img'){
+                                item.img=true;
+                            }else if(item.key=='text'){
+                                item.text=true;
+                            }else if(item.key=='audio'){
+                                item.audio=true
+                            }
+                        })
+                    }else{
+                        obj.isConent=false;
+                        obj.content=obj.description;
+                    }
+
+
+                })
+            }
+        });
+
+
+        var addCommentModal = $('#add-comment');
+
+        $('.comment-add').on('click',function(){
+            addCommentModal.modal();
+            $('.js-comment-content').val("").focus();
+        })
+
+        $('#events-list').on('click','.js-comment-remove',function(){
+            var _this= $(this);
+            var id=_this.data('id');
+        })
+
+        setTimeout(function(){
+             v.refresh();
+         },3000)
+
+        v.init(function(obj){
+
+            $('.js-chankai').click(function(){
+                var _this=$(this);
+                if(_this.hasClass('zhankai')){
+                    _this.find('.body-shenglv').hide()
+                    _this.find('.body-xianshi').show()
+                    _this.removeClass('zhankai')
+                }else{
+                    _this.find('.body-shenglv').show()
+                    _this.find('.body-xianshi').hide()
+                    _this.addClass('zhankai')
+                }
+            })
+
+            $('.problem-body').each(function(){
+                var _this =$(this);
+                var len = _this.find('.body-replys p').length;
+
+                console.log(len)
+                _this.find('.body-replys p').slice(2,len).hide();
+            })
+
+//            $('.problem-body').find('.body-replys p').slice(2,length).hide();
+
+            $('.js-zhankaiReplys').click(function(){
+                var _this = $(this);
+                var length =_this.closest('.problem-body').find('.body-replys p').length;
+
+                if(_this.hasClass('hide')){
+                    _this.removeClass('hide');
+                    _this.closest('.problem-body').find('.body-replys p').slice(2,length).hide()
+                }else{
+                    _this.addClass('hide');
+                    _this.closest('.problem-body').find('.body-replys p').slice(2,length).show()
+                }
+
+
+            })
+
+
+            var obj = $('.audio').weixinAudio({
+                autoplay:false,
+            });
+        });
+
+        $('.js-comment-submit').on('click',function(e){
+            var conent=$('.js-comment-content').val();
+            if(!conent){
+               app.showAlert('批注内容不能为空！')
+               e.stopPropagation();
+                return
+            }
+
+            app.commonAjax({
+                url:'/MobileApp/Common/postContent.do',
+                data:{
+                    contentType:'PartComment',
+                    content:conent,
+                    parms:JSON.stringify({
+                        ownCorpID:app.params.ownCorpID,
+                        partID:app.params.partID,
+                        basePartID:app.params.basePartID,
+                        summary:conent,
+                        summaryMark:0
+                    })
+                },
+                success:function(data){
+                    if(data.code==0){
+                        v.reload(function(obj){
+                            obj.myscroll.scrollToElement('#events-list',0);
+                        });
+                    }else{
+                         app.showAlert("Error:"+data.code+",Message:"+ (data.message||''));
+                    }
+                }
+            });
+
+            addCommentModal.modal('close');
+
+        })
+
+
+        /*-------------------批注结束-------------------------------------------------*/
+
+
+
+
+
+
+        /*-------------------整体页面开始-------------------------------------------------*/
+
+        
+
+        $(window).resize(function () {
+            $('.am-tabs-bd').height($(window).outerHeight() - 101);
+            $('#wrapper').height(document.documentElement.clientHeight - 101);
+        });
+        $('.am-tabs-bd').height(document.documentElement.clientHeight - 101);
+        $('#wrapper').height(document.documentElement.clientHeight - 101);
+
+
+
+// //        $('#doc-my-tabs').tabs();
+//         $('.bom-expend-menu').hide();
+        $('#doc-my-tabs').tabs("open",0);
+//        $('#doc-my-tabs').tabs("refresh");
+
+        $('#doc-my-tabs').find('a').on('opened.tabs.amui', function (e) {
+            if($(this).text()=='3D'){
+                if(!$('#onlineJSIframe').attr('src')){
+                    var url = 'online_JT_fullScreen.html'
+                    url=app.addUrlParams(url,{partID:app.params.partID, ownCorpID:app.params.ownCorpID})
+                    $('#onlineJSIframe').attr('src',url);
+                }
+            }else if($(this).text()=='问题'){
+                if(!$('#answerIframe').attr('src')){
+                    var url = 'problemList.html'
+                    url=app.addUrlParams(url,{partID:app.params.partID,basePartID:app.params.basePartID,corpID:app.params.corpID})
+                    $('#answerIframe').attr('src',url);
+                }
+            }else if($(this).text()=='BOM结构'){
+                if(!$('#bomIframe').attr('src')){
+                    var url = 'bom.html'
+                    url=app.addUrlParams(url,{partID:app.params.partID,basePartID:app.params.basePartID, ownCorpID:app.params.ownCorpID})
+                    $('#bomIframe').attr('src',url);
+                }
+            }
+            $('.am-tabs-bd').height(document.documentElement.clientHeight - 101);
+            $('#wrapper').height(document.documentElement.clientHeight -101);
+        });
+        /*-------------------整体页面结束-------------------------------------------------*/
+
+
+
+        /*-------------------属性开始-------------------------------------------------*/
+        var proCompiler = Handlebars.compile($('#pro-details').html());
+//        var proBomCompiler = Handlebars.compile($('#pro-bom-details').html());
+
+        app.commonAjax({
+            url: '/MobileApp/Part/getPartDetailView.do',
+            data:{
+                viewName:'XVT_Part_ViewForm_CommonRightBar_SysView',
+                partID:app.params.partID,
+                ownCorpID:app.params.ownCorpID
+            },
+            success: function (data) {
+
+                if(data.code!=0){
+                    app.showAlert("Error:"+data.code+",Message:"+ (data.message||''));
+                    return;
+                }
+                var baseData = [];
+                var proData=[];
+
+                document.title= data.data[0].XAT_Code +" / "+ data.data[0].XAT_Revision + " "+ data.data[0].XAT_Name;
+
+                $.each(data.columns, function () {
+                    this.value = data.data[0][this.field];
+                    var item ={title:this.title,value:this.value};
+
+                    if(this.field == 'XAT_Code' || this.field=='XAT_Name' || this.field=='XAT_Revision'){
+
+                        if(this.field=='XAT_Revision'){
+                            item.isRevision = true;
+                            item.id = data.data[0].XAT_ID;
+                        }
+                        baseData.push(item)
+                    }else{
+                        proData.push(item)
+                    }
+                });
+                $('.js-pro').html(proCompiler(proData));
+                $('.js-base').html(proCompiler(baseData));
+
+            }
+        })
+
+
+
+        /*-------------------属性结束-------------------------------------------------*/
+
+
+
+    })
+</script>
+<script src="./mobile/static/js/plugin/openApp.js?"+Math.random()></script>
+</html>
+<!--http://pnc.co.il/dev/iscroll-5-pull-to-refresh-and-infinite-demo.html-->

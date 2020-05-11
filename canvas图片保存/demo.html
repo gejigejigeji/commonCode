@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+<body>
+<div class="html5-wrappers">
+<div class="content clearfix">
+<article id="content" class="c5">
+<header>
+<input type="button" value="收藏本文" id="btnAddFavorite" class="btn btnArticle" style="display: none;">
+<h1>将canvas元素中的图像转换为jpg等格式的Blob对象</h1>
+</header>
+<p>本文通过一个示例来介绍如何将canvas元素中的图像转换为jpg等格式的Blob对象。</p>
+<p>示例页面的HTML 5代码部分如下所示。</p>
+<pre class="code">&lt;body onload="init();"&gt;
+&lt;canvas id="canvas" width="400" height="300" /&gt;
+&lt;a id="download" download="image.jpg"&gt;下载图像&lt;/a&gt;
+&lt;/body&gt;</pre>
+<p>示例页面的script脚本代码部分如下所示。</p>
+<pre class="code">&lt;script type="text/javascript"&gt;
+function init(){
+    /***
+    绘制canvas元素中的图像
+    ***/
+    var canvas = document.getElementById("canvas");  
+    if (canvas == null)  
+        return false;  
+    var context = canvas.getContext('2d');  
+    context.fillStyle = "#EEEEFF";  
+    context.fillRect(0, 0, 400, 300);  
+    var n = 0; 
+    for(var i = 0; i &lt; 10; i++) 
+    {  
+        context.beginPath();  
+        context.arc(i * 25, i * 25, i * 10, 0, Math.PI * 2, true);  
+        context.closePath();  
+        context.fillStyle = 'rgba(255, 0, 0, 0.25)';  
+        context.fill();  
+    }   
+
+    var type = 'image/jpeg';
+    //将canvas元素中的图像转变为DataURL
+    var dataurl = canvas.toDataURL(type);
+    //抽取DataURL中的数据部分，从Base64格式转换为二进制格式
+    var bin = atob(dataurl.split(',')[1]);
+    //创建空的Uint8Array
+    var buffer = new Uint8Array(bin.length);
+    //将图像数据逐字节放入Uint8Array中
+    for (var i = 0; i &lt; bin.length; i++) {
+        buffer[i] = bin.charCodeAt(i);
+    }
+    //利用Uint8Array创建Blob对象
+    var blob = new Blob([buffer.buffer], {type: type});
+    var url = window.URL.createObjectURL(blob);
+    document.getElementById("download").href=url;
+}
+&lt;/script&gt; </pre>
+<p>在上述代码中，实现了将canvas元素的图像转换为jpg格式的Blob对象的处理。如果将type属性值修改为“image/png”，可以将图像转换为其他格式的Blob对象。如果使用window.URL.createObjectURL方法，则可以获取引用该图像的URL，代码如下所示。</p>
+<pre class="code">var url = window.URL.createObjectURL(blob);</pre>
+<p>可以通过将某个超链接元素的href属性值设置为该URL的方法将图像下载，代码如下所示。</p>
+<pre class="code">document.getElementById("download").href=url;</pre>
+<p>如果要将canvas元素中的图像转换为DataURL，则必须使用canvas元素的toDataURL方法，在该方法中可以使用一个参数，用于指定图像格式，代码如下所示。</p>
+<pre class="code">canvas.toDataURL('image/jpeg') </pre>
+</article>
+</div>
+<article class="content clearfix" id="comments"><div class="topic">
+    <div class="topic-title" style="margin:0px;">
+        发表评论   
+    </div>
+   <div style="margin:0px;">
+       <form id="form1" method="post" action="/Comment/" style="width:100%;text-align:center;padding-bottom:20px;margin:0px;">只有登录用户才能发表评论</form>
+   </div>
+   <div class="topic-title" style="height:25px;">
+       评论   
+   </div>
+   <ul id="cmp_revert"></ul>
+</div></article>
+<input type="hidden" id="navNo" value="4">
+</div>
+<script type="text/javascript" src="/js/common_after.js"></script><script src=" http://hm.baidu.com/h.js?2cd7d3e0e066c9613ae546cdc306919e" type="text/javascript"></script><a href="http://tongji.baidu.com/hm-web/welcome/ico?s=2cd7d3e0e066c9613ae546cdc306919e" target="_blank"><img border="0" src="http://eiv.baidu.com/hmt/icon/21.gif" width="20" height="20"></a>
+
+
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="js/jquery.js"></script>
+<body>
+<style>
+    ul {
+    }
+    ul li{
+        display: inline-block;
+    }
+</style>
+<div>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <a class="dian">...</a>
+    </ul>
+</div>
+
+<script>
+    num=0;
+    $('.dian').click(function () {
+        var list = $('ul li');
+         num+=1
+        console.log(num)
+        for(var i=num;i<i*5;i++) {
+             num++
+            list.eq(i).html(num)
+        }
+    });
+</script>
+</body>
+</html>

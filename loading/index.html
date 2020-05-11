@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<style type="text/css">
+			ul{
+				list-style: none;
+				background: #ddd;
+			}
+			#ull li{
+				height: 50px;
+				width: 50px;
+				margin-top: 10px;
+				background: green;
+			}
+			#wocao{
+				width: 1px;
+				height: 10px;
+				background: red;
+				position: absolute;
+			}
+			#asdasd img{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		</style>
+	</head>
+	<body>
+			<ul id="ull">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<ul id="ull2">
+				<li>a</li>
+				<li>b</li>
+				<li>c</li>
+				<li>d</li>
+				<li>e</li>
+			</ul>
+			<div id="asdasd">
+				<img src="img/360_close/1.png"/>
+				<img src="img/360_close/2.png"/>
+				<img src="img/360_close/3.png"/>
+				<img src="img/360_close/4.png"/>
+				<img src="img/360_close/5.png"/>
+				<img src="img/360_close/6.png"/>
+				<img src="img/360_close/7.png"/>
+				<img src="img/360_close/8.png"/>
+				<img src="img/360_close/9.png"/>
+				<img src="img/360_close/10.png"/>
+				<img src="img/360_close/11.png"/>
+				<img src="img/360_close/12.png"/>
+				<img src="img/360_close/13.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/14.png"/>
+				<img src="img/360_close/15.png"/>
+				<img src="img/360_close/16.png"/>
+				<img src="img/360_close/17.png"/>
+				<img src="img/360_close/18.png"/>
+				<img src="img/360_close/19.png"/>
+				<img src="img/360_close/20.png"/>
+				<img src="img/360_close/21.png"/>
+				<img src="img/360_close/22.png"/>
+				<img src="img/360_close/23.png"/>
+				<img src="img/360_close/24.png" id="qwe"/>
+			</div>
+			
+			<div id="wocao">
+				
+			</div>
+			
+			<div id="yincang" style="display: none; width: 100px; height: 100px; background: greenyellow; transition: all 0.3s;">
+				正文
+			</div>
+		<script type="text/javascript">
+			var page={
+					init:function(){
+						var bg=[];
+						var nowNum=0;
+						var load=document.getElementById("wocao");
+						var imgNum=document.getElementsByTagName('img').length;
+						var imgAll=document.getElementsByTagName('img');
+						imgNum+=bg.length;
+						for(var i=0;i<imgNum;i++){
+							bg.push(imgAll[i].src);
+						var _img=new Image();
+							_img.src=bg[i]
+							_img.onload=function(){
+								console.log('asd')
+							}
+						}
+				}
+			}
+			page.init()
+		</script>
+		<!--<script type="text/javascript">
+			function f1(callback){
+				setTimeout(function(){
+					callback();
+					console.log('111')
+				},1000)
+			}
+			function f2(){
+					var imgnum=$('img').length
+			            var bg=[];
+			            var nownum=0
+			            var load=$('#wocao')
+			            var pageh=$(window).height()
+			            imgnum+=bg.length
+			            $('img').each(function(){
+			            	bg.push($(this).attr('src'));
+			            });
+			            for(var i=0;i<imgnum;i++){
+			            	var _img=new Image();
+			            	_img.src=bg[i];
+			            	_img.onload=function(){
+			            		nownum++;
+			            		var loadwid=nownum/imgnum;
+			            		loadwid*=100;
+			            		var wocaowid=$('#wocao').width()
+			            		load.css({
+			            			'width':loadwid+'%',
+			            			'height':'10px',
+			            			'transition':'all 0.5s'
+			            		})
+			            		console.log(loadwid)
+			            		if(loadwid==100){
+			            			setTimeout(function(){
+			            				load.animate({
+			            				'top':'0',
+			            				'height':pageh
+			            			}).css({
+			            				'transition':'all 1s'
+			            			}).animate({
+			            				'opacity':'0'
+			            			})
+
+			            			},300)
+			            		}
+			            		console.log(loadwid)
+			            	}
+			            }
+			}
+			f1(f2)
+			
+		</script>-->
+	</body>
+	
+</html>
+<!--$("#form1").serialize(),-->
+	
+	
+	
+	
+<!--	
+		$('#tijiao').click(function(){
+				$.ajax({
+					type:"post",
+					url:"ajax.php",
+					data:$('#form1').serialize(),
+					success:function(data){
+						 var obj3 = eval('(' + data + ')'); 
+						$('#asdasd').html(obj3.user+obj3.aser+obj3.sser)
+					},
+
+					
+				});
+			})-->
